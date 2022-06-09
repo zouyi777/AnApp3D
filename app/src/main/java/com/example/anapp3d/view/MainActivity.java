@@ -1,8 +1,10 @@
-package com.example.anapp3d;
+package com.example.anapp3d.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.example.anapp3d.R;
 
 public class MainActivity extends AppCompatActivity {
 
