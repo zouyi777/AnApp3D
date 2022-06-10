@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+
+    <TextView
+        android:id="@+id/tvIssueNo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/block_margin_xxsmall"
+        android:text="20220101"
+        android:textColor="@color/colorFont3"
+        android:textSize="@dimen/font_size_small"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvAwardNo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/block_margin_xxsmall"
+        android:text="436"
+        android:textColor="@color/colorFont3"
+        android:textSize="@dimen/font_size_small"
+        app:layout_constraintStart_toEndOf="@id/tvIssueNo"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvFirstOdd"
+        android:layout_width="@dimen/block_tv_width"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/block_margin_xxsmall"
+        android:text="奇"
+        android:textColor="@color/colorFont3"
+        android:textSize="@dimen/font_size_small"
+        app:layout_constraintStart_toEndOf="@id/tvAwardNo"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvFirstEven"
+        android:layout_width="@dimen/block_tv_width"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/block_margin_xxsmall"
+        android:text=""
+        android:textColor="@color/colorFont3"
+        android:textSize="@dimen/font_size_small"
+        app:layout_constraintStart_toEndOf="@id/tvFirstOdd"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvSecondOdd"
+        android:layout_width="@dimen/block_tv_width"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/block_margin_xxsmall"
+        android:text="奇"
+        android:textColor="@color/colorFont3"
+        android:textSize="@dimen/font_size_small"
+        app:layout_constraintStart_toEndOf="@id/tvFirstEven"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvSecondEven"
+        android:layout_width="@dimen/block_tv_width"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/block_margin_xxsmall"
+        android:text=""
+        android:textColor="@color/colorFont3"
+        android:textSize="@dimen/font_size_small"
+        app:layout_constraintStart_toEndOf="@id/tvSecondOdd"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvThirdOdd"
+        android:layout_width="@dimen/block_tv_width"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/block_margin_xxsmall"
+        android:text="奇"
+        android:textColor="@color/colorFont3"
+        android:textSize="@dimen/font_size_small"
+        app:layout_constraintStart_toEndOf="@id/tvSecondEven"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tvThirdEven"
+        android:layout_width="@dimen/block_tv_width"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/block_margin_xxsmall"
+        android:text=""
+        android:textColor="@color/colorFont3"
+        android:textSize="@dimen/font_size_small"
+        app:layout_constraintStart_toEndOf="@id/tvThirdOdd"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

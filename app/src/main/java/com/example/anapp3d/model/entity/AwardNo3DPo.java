@@ -3,10 +3,9 @@ package com.example.anapp3d.model.entity;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class AwardNo3D extends RealmObject {
+public class AwardNo3DPo extends RealmObject {
 
     /*期号*/
-    @PrimaryKey
     private String issueNo;
 
     /*百位*/
@@ -52,7 +51,7 @@ public class AwardNo3D extends RealmObject {
 
     @Override
     public String toString() {
-        return "AwardNo3D{" +
+        return "AwardNo3DPo{" +
                 "issueNo='" + issueNo + '\'' +
                 ", hundredth=" + hundredth +
                 ", ten=" + ten +
