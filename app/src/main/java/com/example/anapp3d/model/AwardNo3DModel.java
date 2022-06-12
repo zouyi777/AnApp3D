@@ -53,6 +53,11 @@ public class AwardNo3DModel {
         return true;
     }
 
+    public AwardNo3DPo getLastAwardNo(){
+        List<AwardNo3DPo> result = getAwardNoAll();
+        return result.get(result.size()-1);
+    }
+
     /**
      * 查询所有
      * @return

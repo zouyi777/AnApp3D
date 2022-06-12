@@ -5,5 +5,8 @@ public enum DataType {
     AWARD_NO,
 
     /**出现次数*/
-    APPEAR_TIMES
+    APPEAR_TIMES,
+
+    /**预选行*/
+    PRESELECT
 }

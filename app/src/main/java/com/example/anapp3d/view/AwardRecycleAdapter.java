@@ -99,11 +99,6 @@ public class AwardRecycleAdapter extends RecyclerView.Adapter<AwardRecycleAdapte
             if(!TextUtils.isEmpty(awardNo3DVoList.get(position).getThirdRight())){
                 holder.tvThirdRight.setBackgroundResource(R.drawable.shape_corner_right);
             }
-
-            //注册一个点击监听器，点击弹出修改界面
-            holder.itemView.setOnClickListener(v -> {
-                onItemClickListener.onItemClick(awardNo3DVoList.get(position));
-            });
         }
 
         //出现次数类型
@@ -120,6 +115,13 @@ public class AwardRecycleAdapter extends RecyclerView.Adapter<AwardRecycleAdapte
             holder.tvThirdLeft.setTextColor(context.getResources().getColor(R.color.colorTimes,null));
             holder.tvThirdRight.setTextColor(context.getResources().getColor(R.color.colorTimes,null));
         }
+
+        //注册一个点击监听器，点击弹出修改界面
+        holder.itemView.setOnClickListener(v -> {
+            if(DataType.AWARD_NO.equals(awardNo3DVoList.get(position).getDataType())){
+                onItemClickListener.onItemClick(awardNo3DVoList.get(position));
+            }
+        });
 
     }
 

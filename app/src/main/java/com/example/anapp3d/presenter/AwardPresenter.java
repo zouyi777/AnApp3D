@@ -40,6 +40,10 @@ public class AwardPresenter implements Presenter{
         awardNo3DModel.updateAwardNo3d(awardNo3D);
     }
 
+    public AwardNo3DPo getLastAwardNo(){
+        return awardNo3DModel.getLastAwardNo();
+    }
+
     /**
      * 获取奇偶数据
      * @return
@@ -143,6 +147,7 @@ public class AwardPresenter implements Presenter{
 
             resultList.add(awardNo3DVo);
         }
+
         AwardNo3DVo awardNo3DVoTims = new AwardNo3DVo();
         awardNo3DVoTims.setDataType(DataType.APPEAR_TIMES);
         awardNo3DVoTims.setIssueNo("出现次数");

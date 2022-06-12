@@ -83,6 +83,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         queryAwardParam = new QueryAwardParam();
         btnQishu.setText(queryAwardParam.getPageSize()+"期");
 
+        dealPreSelectView();
+
         awardPresenter = new AwardPresenter();
 //        for(int i=0;i<30;i++){
 //            AwardNo3DPo awardNo3D = new AwardNo3DPo();
@@ -175,6 +177,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             tvTitle.setText("修改");
             etIssueNo.setText(awardNo3DVo.getIssueNo());
             etAwardNo.setText(awardNo3DVo.getAwardNo());
+        }else{
+            etIssueNo.setText(String.valueOf(awardPresenter.getLastAwardNo().getIssueNo()+1));
         }
 
         btnOK.setOnClickListener(v -> {
@@ -263,4 +267,49 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         addOrEditAwardNoView(true,awardNo3DVo);
     }
 
+    /**
+     * 预选行视图处理
+     */
+    private void dealPreSelectView(){
+
+        TextView tvFirstLeft = findViewById(R.id.tvFirstLeft);
+        TextView tvFirstRight = findViewById(R.id.tvFirstRight);
+        TextView tvSecondLeft = findViewById(R.id.tvSecondLeft);
+        TextView tvSecondRight = findViewById(R.id.tvSecondRight);
+        TextView tvThirdLeft = findViewById(R.id.tvThirdLeft);
+        TextView tvThirdRight = findViewById(R.id.tvThirdRight);
+
+        tvFirstLeft.setOnClickListener(v ->{
+                    tvFirstLeft.setTextColor(getResources().getColor(R.color.colorTimes,null));
+                    tvFirstRight.setTextColor(getResources().getColor(R.color.colorFont3,null));
+                }
+        );
+        tvFirstRight.setOnClickListener(v ->{
+                    tvFirstRight.setTextColor(getResources().getColor(R.color.colorTimes,null));
+                    tvFirstLeft.setTextColor(getResources().getColor(R.color.colorFont3,null));
+                }
+        );
+
+        tvSecondLeft.setOnClickListener(v ->{
+                    tvSecondLeft.setTextColor(getResources().getColor(R.color.colorTimes,null));
+                    tvSecondRight.setTextColor(getResources().getColor(R.color.colorFont3,null));
+                }
+        );
+        tvSecondRight.setOnClickListener(v ->{
+                    tvSecondRight.setTextColor(getResources().getColor(R.color.colorTimes,null));
+                    tvSecondLeft.setTextColor(getResources().getColor(R.color.colorFont3,null));
+                }
+        );
+
+        tvThirdLeft.setOnClickListener(v ->{
+                    tvThirdLeft.setTextColor(getResources().getColor(R.color.colorTimes,null));
+                    tvThirdRight.setTextColor(getResources().getColor(R.color.colorFont3,null));
+                }
+        );
+        tvThirdRight.setOnClickListener(v ->{
+                    tvThirdRight.setTextColor(getResources().getColor(R.color.colorTimes,null));
+                    tvThirdLeft.setTextColor(getResources().getColor(R.color.colorFont3,null));
+                }
+        );
+    }
 }

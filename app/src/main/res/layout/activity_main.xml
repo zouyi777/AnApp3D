@@ -176,10 +176,139 @@
         android:id="@+id/rvData"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/clSecondNav"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/clPreSelect"
         android:layout_width="match_parent"
         android:layout_height="0dp">
 
     </androidx.recyclerview.widget.RecyclerView>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clPreSelect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <TextView
+            android:id="@+id/tvIssueNo"
+            android:layout_width="0dp"
+            app:layout_constraintHorizontal_weight="2"
+            android:layout_height="@dimen/block_height_xsmall"
+            android:padding="@dimen/block_margin_xxsmall"
+            android:text="预选行"
+            android:textColor="@color/colorFont3"
+            android:textSize="@dimen/font_size_small"
+            android:gravity="center"
+            android:background="@drawable/shape_corner_pre"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/tvAwardNo"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvAwardNo"
+            android:layout_width="0dp"
+            app:layout_constraintHorizontal_weight="1"
+            android:layout_height="@dimen/block_height_xsmall"
+            android:padding="@dimen/block_margin_xxsmall"
+            android:text="-"
+            android:textColor="@color/colorFont3"
+            android:textSize="@dimen/font_size_small"
+            android:gravity="center"
+            android:background="@drawable/shape_corner_pre"
+            app:layout_constraintStart_toEndOf="@id/tvIssueNo"
+            app:layout_constraintEnd_toStartOf="@id/tvFirstLeft"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvFirstLeft"
+            android:layout_width="0dp"
+            app:layout_constraintHorizontal_weight="1"
+            android:layout_height="@dimen/block_height_xsmall"
+            android:padding="@dimen/block_margin_xxsmall"
+            android:text="奇"
+            android:textColor="@color/colorFont3"
+            android:textSize="@dimen/font_size_small"
+            android:gravity="center"
+            android:background="@drawable/shape_corner_pre"
+            app:layout_constraintStart_toEndOf="@id/tvAwardNo"
+            app:layout_constraintEnd_toStartOf="@id/tvFirstRight"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvFirstRight"
+            android:layout_width="0dp"
+            app:layout_constraintHorizontal_weight="1"
+            android:layout_height="@dimen/block_height_xsmall"
+            android:padding="@dimen/block_margin_xxsmall"
+            android:text="偶"
+            android:textColor="@color/colorFont3"
+            android:textSize="@dimen/font_size_small"
+            android:gravity="center"
+            android:background="@drawable/shape_corner_pre"
+            app:layout_constraintStart_toEndOf="@id/tvFirstLeft"
+            app:layout_constraintEnd_toStartOf="@id/tvSecondLeft"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvSecondLeft"
+            android:layout_width="0dp"
+            app:layout_constraintHorizontal_weight="1"
+            android:layout_height="@dimen/block_height_xsmall"
+            android:padding="@dimen/block_margin_xxsmall"
+            android:text="奇"
+            android:textColor="@color/colorFont3"
+            android:textSize="@dimen/font_size_small"
+            android:gravity="center"
+            android:background="@drawable/shape_corner_pre"
+            app:layout_constraintStart_toEndOf="@id/tvFirstRight"
+            app:layout_constraintEnd_toStartOf="@id/tvSecondRight"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvSecondRight"
+            android:layout_width="0dp"
+            app:layout_constraintHorizontal_weight="1"
+            android:layout_height="@dimen/block_height_xsmall"
+            android:padding="@dimen/block_margin_xxsmall"
+            android:text="偶"
+            android:textColor="@color/colorFont3"
+            android:textSize="@dimen/font_size_small"
+            android:gravity="center"
+            android:background="@drawable/shape_corner_pre"
+            app:layout_constraintStart_toEndOf="@id/tvSecondLeft"
+            app:layout_constraintEnd_toStartOf="@id/tvThirdLeft"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvThirdLeft"
+            android:layout_width="0dp"
+            app:layout_constraintHorizontal_weight="1"
+            android:layout_height="@dimen/block_height_xsmall"
+            android:padding="@dimen/block_margin_xxsmall"
+            android:text="奇"
+            android:textColor="@color/colorFont3"
+            android:textSize="@dimen/font_size_small"
+            android:gravity="center"
+            android:background="@drawable/shape_corner_pre"
+            app:layout_constraintStart_toEndOf="@id/tvSecondRight"
+            app:layout_constraintEnd_toStartOf="@id/tvThirdRight"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvThirdRight"
+            android:layout_width="0dp"
+            app:layout_constraintHorizontal_weight="1"
+            android:layout_height="@dimen/block_height_xsmall"
+            android:padding="@dimen/block_margin_xxsmall"
+            android:text="偶"
+            android:textColor="@color/colorFont3"
+            android:textSize="@dimen/font_size_small"
+            android:gravity="center"
+            android:background="@drawable/shape_corner_pre"
+            app:layout_constraintStart_toEndOf="@id/tvThirdLeft"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
