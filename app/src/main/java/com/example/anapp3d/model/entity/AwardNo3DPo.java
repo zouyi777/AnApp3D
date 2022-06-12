@@ -5,8 +5,11 @@ import io.realm.annotations.PrimaryKey;
 
 public class AwardNo3DPo extends RealmObject {
 
+    @PrimaryKey
+    private Long id;
+
     /*期号*/
-    private String issueNo;
+    private Long issueNo;
 
     /*百位*/
     private int hundredth;
@@ -17,11 +20,18 @@ public class AwardNo3DPo extends RealmObject {
     /*个位*/
     private int theUnit;
 
-    public String getIssueNo() {
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+    public Long getIssueNo() {
         return issueNo;
     }
 
-    public void setIssueNo(String issueNo) {
+    public void setIssueNo(Long issueNo) {
         this.issueNo = issueNo;
     }
 

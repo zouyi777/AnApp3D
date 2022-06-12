@@ -1,18 +1,35 @@
 package com.example.anapp3d.model.entity;
 
+import com.example.anapp3d.enums.DataType;
+
 public class AwardNo3DVo{
 
+    private Long id;
+    private DataType dataType;
     private String issueNo;
     private String awardNo;
+    private String firstLeft;
+    private String firstRight;
+    private String secondLeft;
+    private String secondRight;
+    private String thirdLeft;
+    private String thirdRight;
 
-    private String firstOdd;
-    private String firstEven;
+    public Long getId() {
+        return id;
+    }
 
-    private String secondOdd;
-    private String secondEven;
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    private String thirdOdd;
-    private String thirdEven;
+    public DataType getDataType() {
+        return dataType;
+    }
+
+    public void setDataType(DataType dataType) {
+        this.dataType = dataType;
+    }
 
     public String getIssueNo() {
         return issueNo;
@@ -30,65 +47,66 @@ public class AwardNo3DVo{
         this.awardNo = awardNo;
     }
 
-    public String getFirstOdd() {
-        return firstOdd;
+    public String getFirstLeft() {
+        return firstLeft;
     }
 
-    public void setFirstOdd(String firstOdd) {
-        this.firstOdd = firstOdd;
+    public void setFirstLeft(String firstLeft) {
+        this.firstLeft = firstLeft;
     }
 
-    public String getFirstEven() {
-        return firstEven;
+    public String getFirstRight() {
+        return firstRight;
     }
 
-    public void setFirstEven(String firstEven) {
-        this.firstEven = firstEven;
+    public void setFirstRight(String firstRight) {
+        this.firstRight = firstRight;
     }
 
-    public String getSecondOdd() {
-        return secondOdd;
+    public String getSecondLeft() {
+        return secondLeft;
     }
 
-    public void setSecondOdd(String secondOdd) {
-        this.secondOdd = secondOdd;
+    public void setSecondLeft(String secondLeft) {
+        this.secondLeft = secondLeft;
     }
 
-    public String getSecondEven() {
-        return secondEven;
+    public String getSecondRight() {
+        return secondRight;
     }
 
-    public void setSecondEven(String secondEven) {
-        this.secondEven = secondEven;
+    public void setSecondRight(String secondRight) {
+        this.secondRight = secondRight;
     }
 
-    public String getThirdOdd() {
-        return thirdOdd;
+    public String getThirdLeft() {
+        return thirdLeft;
     }
 
-    public void setThirdOdd(String thirdOdd) {
-        this.thirdOdd = thirdOdd;
+    public void setThirdLeft(String thirdLeft) {
+        this.thirdLeft = thirdLeft;
     }
 
-    public String getThirdEven() {
-        return thirdEven;
+    public String getThirdRight() {
+        return thirdRight;
     }
 
-    public void setThirdEven(String thirdEven) {
-        this.thirdEven = thirdEven;
+    public void setThirdRight(String thirdRight) {
+        this.thirdRight = thirdRight;
     }
 
     @Override
     public String toString() {
         return "AwardNo3DVo{" +
-                "issueNo='" + issueNo + '\'' +
+                "dataType=" + dataType +
+                ", issueNo='" + issueNo + '\'' +
                 ", awardNo='" + awardNo + '\'' +
-                ", firstOdd='" + firstOdd + '\'' +
-                ", firstEven='" + firstEven + '\'' +
-                ", secondOdd='" + secondOdd + '\'' +
-                ", secondEven='" + secondEven + '\'' +
-                ", thirdOdd='" + thirdOdd + '\'' +
-                ", thirdEven='" + thirdEven + '\'' +
+                ", firstLeft='" + firstLeft + '\'' +
+                ", firstRight='" + firstRight + '\'' +
+                ", secondLeft='" + secondLeft + '\'' +
+                ", secondRight='" + secondRight + '\'' +
+                ", thirdLeft='" + thirdLeft + '\'' +
+                ", thirdRight='" + thirdRight + '\'' +
                 '}';
     }
 }

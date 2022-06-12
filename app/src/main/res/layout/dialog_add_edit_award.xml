@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/shape_corner_dialog"
+    android:padding="@dimen/block_margin_middle">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:textSize="@dimen/font_size_middle"
+        android:text="新增"/>
+
+
+    <EditText
+        android:id="@+id/etIssueNo"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/block_height_xsmall"
+        android:paddingStart="@dimen/block_margin_middle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvTitle"
+        android:layout_marginTop="@dimen/block_margin_middle"
+        android:hint="请输入期号"
+        android:background="@drawable/shape_corner_edit"
+        android:inputType="phone"
+        android:selectAllOnFocus="true" />
+
+    <EditText
+        android:id="@+id/etAwardNo"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/block_height_xsmall"
+        android:paddingStart="@dimen/block_margin_middle"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etIssueNo"
+        android:layout_marginTop="@dimen/block_margin_middle"
+        android:hint="请输入奖号"
+        android:background="@drawable/shape_corner_edit"
+        android:inputType="phone"
+        android:selectAllOnFocus="true" />
+
+    <Button
+        android:id="@+id/btnOK"
+        android:layout_width="0dp"
+        app:layout_constraintHorizontal_weight="1"
+        android:layout_height="@dimen/block_height_xsmall"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btnCancle"
+        app:layout_constraintTop_toBottomOf="@id/etAwardNo"
+        android:layout_gravity="start"
+        android:layout_marginTop="@dimen/block_margin_large"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_size_xmiddle"
+        android:text="确定"
+        android:background="@drawable/shape_corner_btn"/>
+
+    <Button
+        android:id="@+id/btnCancle"
+        android:layout_width="0dp"
+        app:layout_constraintHorizontal_weight="1"
+        android:layout_marginStart="@dimen/block_margin_xsmall"
+        android:layout_height="@dimen/block_height_xsmall"
+        app:layout_constraintStart_toEndOf="@id/btnOK"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etAwardNo"
+        android:layout_gravity="start"
+        android:layout_marginTop="@dimen/block_margin_large"
+        android:textColor="@color/white"
+        android:textSize="@dimen/font_size_xmiddle"
+        android:text="取消"
+        android:background="@drawable/shape_corner_btn"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

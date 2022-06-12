@@ -1,16 +1,15 @@
 package com.example.anapp3d.model;
 
 
-import com.example.anapp3d.enums.OddOREven;
 import com.example.anapp3d.model.entity.AwardNo3DPo;
-import com.example.anapp3d.model.entity.AwardNo3DVo;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class AwardNo3DModel {
 
@@ -25,10 +24,10 @@ public class AwardNo3DModel {
      * @param awardNo3D
      * @return
      */
-    public boolean addAwardNo3d(AwardNo3DPo awardNo3D){
+    public boolean insertAwardNo3d(AwardNo3DPo awardNo3D){
 
         realm.beginTransaction();
-        AwardNo3DPo awardNo3DPo = realm.createObject(AwardNo3DPo.class);
+        AwardNo3DPo awardNo3DPo = realm.createObject(AwardNo3DPo.class, System.currentTimeMillis());
         awardNo3DPo.setIssueNo(awardNo3D.getIssueNo());
         awardNo3DPo.setHundredth(awardNo3D.getHundredth());
         awardNo3DPo.setTen(awardNo3D.getTen());
@@ -37,6 +36,20 @@ public class AwardNo3DModel {
         realm.copyToRealm(awardNo3DPo);
         realm.commitTransaction();
 
+        return true;
+    }
+
+    /**
+     * 更新奖号
+     * @param awardNo3D
+     * @return
+     */
+    public boolean updateAwardNo3d(AwardNo3DPo awardNo3D){
+        realm.beginTransaction();
+        // 若是有相同的主键，将更新对象
+        // 若是主键不一致，将建立新的对象
+        realm.copyToRealmOrUpdate(awardNo3D);
+        realm.commitTransaction();
         return true;
     }
 
@@ -57,9 +70,10 @@ public class AwardNo3DModel {
      * 分页查询
      * @return
      */
-    public List<AwardNo3DVo> getAwardNoByPage(int startPage, int pageSize){
+    public List<AwardNo3DPo> getAwardNoByPage(int startPage, int pageSize){
 
         RealmResults<AwardNo3DPo> results = realm.where(AwardNo3DPo.class).findAllAsync();
+        results = results.sort("issueNo",Sort.DESCENDING);//根据期号倒序
         List<AwardNo3DPo> dataList = new ArrayList<>();
         for (AwardNo3DPo awardNo3DPo : results) {
             dataList.add(awardNo3DPo);
@@ -73,101 +87,22 @@ public class AwardNo3DModel {
             startPage = topIndex;
         }
 
-        List<AwardNo3DVo> resultList = new ArrayList<>();
+        if(startPage <0){
+            startPage = 0;
+        }
+
+        List<AwardNo3DPo> resultList = new ArrayList<>();
         if(startPage < dataList.size()){
             for(int i=startPage;i<dataList.size();i++){
                 if(resultList.size() >= pageSize){
                     break;
                 }
-                AwardNo3DVo awardNo3DVo = new AwardNo3DVo();
-                AwardNo3DPo awardNo3DPo = dataList.get(i);
-                awardNo3DVo.setIssueNo(awardNo3DPo.getIssueNo());
-
-                int hundredth = awardNo3DPo.getHundredth();
-                int ten = awardNo3DPo.getTen();
-                int theUnit = awardNo3DPo.getTheUnit();
-                awardNo3DVo.setAwardNo(hundredth +String.valueOf(ten)+ theUnit);
-
-                if(OddOREven.ODD_NUMBER.equals(judgeOddOrEven(hundredth))){
-                    awardNo3DVo.setFirstOdd("奇");
-                    awardNo3DVo.setFirstEven("");
-                }else{
-                    awardNo3DVo.setFirstOdd("");
-                    awardNo3DVo.setFirstEven("偶");
-                }
-
-                if(OddOREven.ODD_NUMBER.equals(judgeOddOrEven(ten))){
-                    awardNo3DVo.setSecondOdd("奇");
-                    awardNo3DVo.setSecondEven("");
-                }else{
-                    awardNo3DVo.setSecondOdd("");
-                    awardNo3DVo.setSecondEven("偶");
-                }
-
-                if(OddOREven.ODD_NUMBER.equals(judgeOddOrEven(theUnit))){
-                    awardNo3DVo.setThirdOdd("奇");
-                    awardNo3DVo.setThirdEven("");
-                }else{
-                    awardNo3DVo.setThirdOdd("");
-                    awardNo3DVo.setThirdEven("偶");
-                }
-
-                resultList.add(awardNo3DVo);
+                resultList.add(dataList.get(i));
             }
         }
-
         return resultList;
     }
 
-    /**
-     * 判断数据奇偶性
-     * @param awardNo3DPo
-     * @return
-     */
-    public OddOREven[] judgeOddOrEvenOfAwardNo(AwardNo3DPo awardNo3DPo){
 
-        OddOREven[] result =new OddOREven[3];
-
-        if(awardNo3DPo !=null){
-
-            int hundredth = awardNo3DPo.getHundredth();
-            int ten = awardNo3DPo.getTen();
-            int theUnit = awardNo3DPo.getTheUnit();
-
-            result[0] = judgeOddOrEven(hundredth);
-            result[1] = judgeOddOrEven(ten);
-            result[2] = judgeOddOrEven(theUnit);
-        }
-        return result;
-    }
-
-    /**
-     * 判断奇偶
-     * @param integerNum
-     * @return
-     */
-    public OddOREven judgeOddOrEven(int integerNum){
-
-        if(integerNum % 2 ==0){
-            return OddOREven.EVEN_NUMBER;
-        }
-        return OddOREven.ODD_NUMBER;
-    }
-
-    /**
-     * 从小到大排序成组合模式
-     * @param awardNo3DPo
-     * @return
-     */
-    public List<Integer> getAwardZuheNo(AwardNo3DPo awardNo3DPo){
-
-        List<Integer> zuheNo = new ArrayList<>();
-        zuheNo.add(awardNo3DPo.getHundredth());
-        zuheNo.add(awardNo3DPo.getTen());
-        zuheNo.add(awardNo3DPo.getTheUnit());
-        Collections.sort(zuheNo);
-
-        return zuheNo;
-    }
 
 }

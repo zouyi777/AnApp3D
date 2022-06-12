@@ -17,4 +17,7 @@
     <color name="colorDivider">#e7e7e7</color>
 
     <color name="colorMyTheme">#33ccdd</color>
+    <color name="colorLeft">#e3c6fe</color>
+    <color name="colorRight">#ffe6a3</color>
+    <color name="colorTimes">#f82700</color>
 </resources>
