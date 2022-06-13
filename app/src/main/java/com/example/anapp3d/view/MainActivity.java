@@ -1,12 +1,20 @@
 package com.example.anapp3d.view;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +24,8 @@ import android.widget.Toast;
 
 import com.example.anapp3d.R;
 import com.example.anapp3d.enums.AwardAttribute;
+import com.example.anapp3d.enums.DataOperType;
+import com.example.anapp3d.enums.DataType;
 import com.example.anapp3d.enums.DirectOrGroup;
 import com.example.anapp3d.model.AwardNo3DModel;
 import com.example.anapp3d.model.entity.AwardNo3DPo;
@@ -23,14 +33,20 @@ import com.example.anapp3d.model.entity.AwardNo3DVo;
 import com.example.anapp3d.model.entity.QueryAwardParam;
 import com.example.anapp3d.presenter.AwardPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,AwardRecycleAdapter.OnItemClickListener {
 
+    public static String TAG = MainActivity.class.getName();
+
+    public static int REQUEST_CODE_EXPORT_AWARD_NO = 10000;
+
     private Button btnAdd;
     private Button btnSwitchDirect;
     private Button btnSwitchGroup;
-    private Button btnSwitchExport;
+    private Button btnImport;
+    private Button btnExport;
 
     private Button btnOddEven;
     private Button btnLargeSmall;
@@ -50,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private AwardPresenter awardPresenter;
 
     private QueryAwardParam queryAwardParam;
+    private DataOperType dataOperType = DataOperType.EXPORT_AWARD;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +77,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btnSwitchDirect = findViewById(R.id.btnSwitchDirect);
         btnSwitchGroup = findViewById(R.id.btnSwitchGroup);
-        btnSwitchExport = findViewById(R.id.btnSwitchExport);
+        btnImport = findViewById(R.id.btnImport);
+        btnExport = findViewById(R.id.btnExport);
 
         btnOddEven = findViewById(R.id.btnOddEven);
         btnLargeSmall = findViewById(R.id.btnLargeSmall);
@@ -73,7 +91,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnAdd.setOnClickListener(this);
         btnSwitchDirect.setOnClickListener(this);
         btnSwitchGroup.setOnClickListener(this);
-        btnSwitchExport.setOnClickListener(this);
+        btnImport.setOnClickListener(this);
+        btnExport.setOnClickListener(this);
         btnOddEven.setOnClickListener(this);
         btnLargeSmall.setOnClickListener(this);
         btnPageUp.setOnClickListener(this);
@@ -93,25 +112,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         intPreSelectView();
 
         awardPresenter = new AwardPresenter();
-//        for(int i=0;i<30;i++){
-//            AwardNo3DPo awardNo3D = new AwardNo3DPo();
-//            int num = 0;
-//            if(i<10){
-//                awardNo3D.setIssueNo(Long.valueOf("202200"+i));
-//                num = i;
-//            }else if(i>=10 && i<20){
-//                awardNo3D.setIssueNo(Long.valueOf("20220"+i));
-//                num = i-10;
-//            }else if(i>=20 && i<30){
-//                awardNo3D.setIssueNo(Long.valueOf("20220"+i));
-//                num = i-20;
-//            }
-//            awardNo3D.setHundredth(num);
-//            awardNo3D.setTen(num);
-//            awardNo3D.setTheUnit(num);
-//            awardPresenter.addAwardNo3d(awardNo3D);
-//        }
-
         fetchAwardNo();
     }
 
@@ -129,7 +129,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 queryAwardParam.setSelectDirectOrGroup(DirectOrGroup.GROUP);
                 fetchAwardNo();
                 break;
-            case R.id.btnSwitchExport:
+            case R.id.btnImport:
+                dataOperType = DataOperType.EXPORT_AWARD;
+                requestReadWritePermissions();
+            case R.id.btnExport:
+                dataOperType = DataOperType.IMPORT_AWARD;
+                requestReadWritePermissions();
                 break;
             case R.id.btnOddEven:
                 queryAwardParam.setSelectAwardAttr(AwardAttribute.ODD_EVEN);
@@ -277,7 +282,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * 预选行视图处理
+     * 初始化预选行视图
      */
     private void intPreSelectView(){
 
@@ -322,6 +327,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         );
     }
 
+    /**
+     * 改变预选行状态
+     */
     private void changePreSelectView(){
         if(AwardAttribute.ODD_EVEN.equals(queryAwardParam.getSelectAwardAttr())){
             tvFirstLeft.setText("奇");
@@ -345,5 +353,134 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         tvSecondRight.setTextColor(getResources().getColor(R.color.colorFont3,null));
         tvThirdLeft.setTextColor(getResources().getColor(R.color.colorFont3,null));
         tvThirdRight.setTextColor(getResources().getColor(R.color.colorFont3,null));
+    }
+
+    /**
+     * 导出奖号
+     */
+    private void requestReadWritePermissions(){
+        //外部存储的读写权限
+        String[] PM_MULTIPLE={ Manifest.permission.READ_EXTERNAL_STORAGE,
+                               Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        try{
+            //如果操作系统SDK级别在23之上（android6.0），就进行动态权限申请
+            if(Build.VERSION.SDK_INT>=23){
+
+                ArrayList<String> pmList=new ArrayList<>();
+
+                //获取当前未授权的权限列表
+                for(String permission:PM_MULTIPLE){
+                    int nRet= ContextCompat.checkSelfPermission(this,permission);
+                    Log.i(TAG,"checkSelfPermission nRet="+nRet);
+                    if(nRet!= PackageManager.PERMISSION_GRANTED){
+                        pmList.add(permission);
+                    }
+                }
+
+                //对未授权的权限进行申请
+                if(pmList.size()>0){
+                    Log.i(TAG,"进行权限申请...");
+                    String[] sList=pmList.toArray(new String[0]);
+                    ActivityCompat.requestPermissions(this,sList,REQUEST_CODE_EXPORT_AWARD_NO);
+                }
+                //有读写权限直接进行导出操作
+                else{
+                    importOrExportAward();
+                }
+            }
+        }catch(Exception e){
+            Log.e(TAG,"获取外部存储读写权限出错",e);
+        }
+    }
+
+    private void importOrExportAward(){
+
+        if(DataOperType.EXPORT_AWARD.equals(dataOperType)){
+
+            String result = awardPresenter.exportAwardNo();
+            Toast.makeText(MainActivity.this,result,Toast.LENGTH_SHORT).show();
+
+        }else if(DataOperType.IMPORT_AWARD.equals(dataOperType)){
+
+            String result = awardPresenter.importAwardNo();
+            Toast.makeText(MainActivity.this,result,Toast.LENGTH_SHORT).show();
+            fetchAwardNo();
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if(REQUEST_CODE_EXPORT_AWARD_NO == requestCode){
+            //允许再次询问申请的权限列表（权限上次是否被拒绝过，但可继续请求）
+            ArrayList<String> requestAgainList=new ArrayList<>();
+            //被禁止的权限列表，即使再次请求也不会弹框。（1、对话框中选择了 Don’t ask again 选项；2、设备规范禁止应用具有该权限）
+            ArrayList<String> biddenList=new ArrayList<>();
+
+            for(int i=0;i<permissions.length;i++){
+
+                if(grantResults[i] == PackageManager.PERMISSION_GRANTED){
+                    Log.i(TAG,"【"+permissions[i]+"】权限授权成功");
+                }
+                else{
+                    //判断是否允许重新申请该权限
+                    boolean nRet=ActivityCompat.shouldShowRequestPermissionRationale(this,permissions[i]);
+                    Log.i(TAG,"shouldShowRequestPermissionRationale nRet="+nRet);
+                    if(nRet){//允许重新申请
+                        requestAgainList.add(permissions[i]);
+                    }
+                    else{//禁止申请
+                        biddenList.add(permissions[i]);
+                    }
+                }
+            }
+
+            //优先对禁止列表进行判断,告知权限的作用，并提示用户手动申请
+            if(biddenList.size()>0){//告知该权限作用，要求手动授予权限
+                showFinishedDialog();
+            }
+            //告知权限的作用，并重新申请
+            else if(requestAgainList.size()>0){
+                showTipDialog(requestAgainList);
+            }
+            //权限都申请通过
+            else{
+                importOrExportAward();
+            }
+        }
+    }
+
+    /**
+     * 告知用户权限被禁止，需要手动开启
+     */
+    public void showFinishedDialog(){
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("警告")
+                .setMessage("请前往设置中打开相关权限，否则功能无法正常运行！")
+                .setPositiveButton("确定", (dialog1, which) -> {
+                    // 一般情况下如果用户不授权的话，功能是无法运行的，做退出处理
+                    dialog1.dismiss();
+                })
+                .create();
+        dialog.show();
+    }
+
+    /**
+     * 再次申请权限弹框
+     * @param pmList
+     */
+    public void showTipDialog(ArrayList<String> pmList){
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("提示")
+                .setMessage("【"+pmList.toString()+"】权限为应用必要权限，请授权")
+                .setPositiveButton("确定", (dialog1, which) -> {
+                    String[] sList=pmList.toArray(new String[0]);
+                    //重新申请该权限
+                    ActivityCompat.requestPermissions(MainActivity.this,sList,10000);
+                })
+                .create();
+        dialog.show();
     }
 }

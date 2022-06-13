@@ -29,7 +29,7 @@ public class AwardPresenter implements Presenter{
      * @param awardNo3D
      */
     public void addAwardNo3d(AwardNo3DPo awardNo3D){
-        awardNo3DModel.insertAwardNo3d(awardNo3D);
+        awardNo3DModel.insertAwardNo3d(awardNo3D,System.currentTimeMillis());
     }
 
     /**
@@ -161,6 +161,21 @@ public class AwardPresenter implements Presenter{
         resultList.add(awardNo3DVoTims);
     }
 
+    public String exportAwardNo(){
+        String result = awardNo3DModel.exportAwardNo();
+        if(!result.contains(AwardNo3DModel.EXPORT_AWARD_ERROR)){
+            result = "数据导出成功，文件目录="+ result;
+        }
+        return result;
+    }
+
+    public String importAwardNo(){
+        String result = awardNo3DModel.importAwardNo();
+        if(!result.contains(AwardNo3DModel.IMPORT_AWARD_ERROR)){
+            result = "数据导入成功";
+        }
+        return result;
+    }
 
     @Override
     public void onDestroy() {
