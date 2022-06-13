@@ -38,6 +38,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btnPageDown;
     private Button btnQishu;
 
+    private TextView tvFirstLeft;
+    private TextView tvFirstRight;
+    private TextView tvSecondLeft;
+    private TextView tvSecondRight;
+    private TextView tvThirdLeft;
+    private TextView tvThirdRight;
+
     private RecyclerView rvData;
     private AwardRecycleAdapter awardRecycleAdapter;
     private AwardPresenter awardPresenter;
@@ -83,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         queryAwardParam = new QueryAwardParam();
         btnQishu.setText(queryAwardParam.getPageSize()+"期");
 
-        dealPreSelectView();
+        intPreSelectView();
 
         awardPresenter = new AwardPresenter();
 //        for(int i=0;i<30;i++){
@@ -127,10 +134,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnOddEven:
                 queryAwardParam.setSelectAwardAttr(AwardAttribute.ODD_EVEN);
                 fetchAwardNo();
+                changePreSelectView();
                 break;
             case R.id.btnLargeSmall:
                 queryAwardParam.setSelectAwardAttr(AwardAttribute.LARGE_SMALL);
                 fetchAwardNo();
+                changePreSelectView();
                 break;
             case R.id.btnPageUp:
                 queryAwardParam.startPageSelfAdd();
@@ -270,14 +279,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * 预选行视图处理
      */
-    private void dealPreSelectView(){
+    private void intPreSelectView(){
 
-        TextView tvFirstLeft = findViewById(R.id.tvFirstLeft);
-        TextView tvFirstRight = findViewById(R.id.tvFirstRight);
-        TextView tvSecondLeft = findViewById(R.id.tvSecondLeft);
-        TextView tvSecondRight = findViewById(R.id.tvSecondRight);
-        TextView tvThirdLeft = findViewById(R.id.tvThirdLeft);
-        TextView tvThirdRight = findViewById(R.id.tvThirdRight);
+        tvFirstLeft = findViewById(R.id.tvFirstLeft);
+        tvFirstRight = findViewById(R.id.tvFirstRight);
+        tvSecondLeft = findViewById(R.id.tvSecondLeft);
+        tvSecondRight = findViewById(R.id.tvSecondRight);
+        tvThirdLeft = findViewById(R.id.tvThirdLeft);
+        tvThirdRight = findViewById(R.id.tvThirdRight);
 
         tvFirstLeft.setOnClickListener(v ->{
                     tvFirstLeft.setTextColor(getResources().getColor(R.color.colorTimes,null));
@@ -311,5 +320,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     tvThirdLeft.setTextColor(getResources().getColor(R.color.colorFont3,null));
                 }
         );
+    }
+
+    private void changePreSelectView(){
+        if(AwardAttribute.ODD_EVEN.equals(queryAwardParam.getSelectAwardAttr())){
+            tvFirstLeft.setText("奇");
+            tvFirstRight.setText("偶");
+            tvSecondLeft.setText("奇");
+            tvSecondRight.setText("偶");
+            tvThirdLeft.setText("奇");
+            tvThirdRight.setText("偶");
+        }else if(AwardAttribute.LARGE_SMALL.equals(queryAwardParam.getSelectAwardAttr())){
+            tvFirstLeft.setText("大");
+            tvFirstRight.setText("小");
+            tvSecondLeft.setText("大");
+            tvSecondRight.setText("小");
+            tvThirdLeft.setText("大");
+            tvThirdRight.setText("小");
+        }
+
+        tvFirstLeft.setTextColor(getResources().getColor(R.color.colorFont3,null));
+        tvFirstRight.setTextColor(getResources().getColor(R.color.colorFont3,null));
+        tvSecondLeft.setTextColor(getResources().getColor(R.color.colorFont3,null));
+        tvSecondRight.setTextColor(getResources().getColor(R.color.colorFont3,null));
+        tvThirdLeft.setTextColor(getResources().getColor(R.color.colorFont3,null));
+        tvThirdRight.setTextColor(getResources().getColor(R.color.colorFont3,null));
     }
 }
