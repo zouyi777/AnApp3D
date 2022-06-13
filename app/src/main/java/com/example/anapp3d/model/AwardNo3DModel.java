@@ -13,6 +13,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -144,7 +146,7 @@ public class AwardNo3DModel {
             BufferedWriter bw = new BufferedWriter(fw);
             for(AwardNo3DPo awardNo3DPo:listAwardNo){
                 String rawData = awardNo3DPo.getIssueNo()+DIVIDER_OF_ISSUENO_AWARD+awardNo3DPo.getHundredth()+
-                                 awardNo3DPo.getTen()+awardNo3DPo.getTheUnit()+"\r\n ";
+                                 awardNo3DPo.getTen()+awardNo3DPo.getTheUnit()+"\r\n";
                 bw.write(rawData);
             }
             bw.close();
@@ -160,14 +162,16 @@ public class AwardNo3DModel {
      * 导入奖号数据
      * @return
      */
-    public String importAwardNo(){
+    public String importAwardNo(InputStream in){
 
-        File mPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-        String fileName = mPath + File.separator+EXPORT_FILE_NAME;
+//        File mPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+//        String fileName = mPath + File.separator+EXPORT_FILE_NAME;
         try {
-            FileReader fr = new FileReader(fileName);
-            BufferedReader br = new BufferedReader(fr);
+//            FileReader fr = new FileReader(fileName);
+//            BufferedReader br = new BufferedReader(fr);
 
+            InputStreamReader inputReader = new InputStreamReader(in);
+            BufferedReader br = new BufferedReader(inputReader);
             String rawData;
             int i=0;
             while ((rawData = br.readLine().trim()) != null && rawData.length() > 0){
@@ -190,9 +194,9 @@ public class AwardNo3DModel {
             }
 
             br.close();
-            fr.close();
+            inputReader.close();
         } catch (IOException e) {
-            Log.e(TAG,"导出奖号数据出错",e);
+            Log.e(TAG,"导入奖号数据出错",e);
             return IMPORT_AWARD_ERROR+"="+e.getMessage();
         }
         return "success";

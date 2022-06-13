@@ -33,6 +33,7 @@ import com.example.anapp3d.model.entity.AwardNo3DVo;
 import com.example.anapp3d.model.entity.QueryAwardParam;
 import com.example.anapp3d.presenter.AwardPresenter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnSwitchGroup.setOnClickListener(this);
         btnImport.setOnClickListener(this);
         btnExport.setOnClickListener(this);
+
         btnOddEven.setOnClickListener(this);
         btnLargeSmall.setOnClickListener(this);
         btnPageUp.setOnClickListener(this);
@@ -130,10 +132,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 fetchAwardNo();
                 break;
             case R.id.btnImport:
-                dataOperType = DataOperType.EXPORT_AWARD;
-                requestReadWritePermissions();
-            case R.id.btnExport:
                 dataOperType = DataOperType.IMPORT_AWARD;
+                requestReadWritePermissions();
+                break;
+            case R.id.btnExport:
+                dataOperType = DataOperType.EXPORT_AWARD;
                 requestReadWritePermissions();
                 break;
             case R.id.btnOddEven:
@@ -370,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 //获取当前未授权的权限列表
                 for(String permission:PM_MULTIPLE){
-                    int nRet= ContextCompat.checkSelfPermission(this,permission);
+                    int nRet= ActivityCompat.checkSelfPermission(this,permission);
                     Log.i(TAG,"checkSelfPermission nRet="+nRet);
                     if(nRet!= PackageManager.PERMISSION_GRANTED){
                         pmList.add(permission);
@@ -402,9 +405,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         }else if(DataOperType.IMPORT_AWARD.equals(dataOperType)){
 
-            String result = awardPresenter.importAwardNo();
-            Toast.makeText(MainActivity.this,result,Toast.LENGTH_SHORT).show();
-            fetchAwardNo();
+            try {
+                String result = awardPresenter.importAwardNo(getResources().getAssets().open(AwardNo3DModel.EXPORT_FILE_NAME));
+                Toast.makeText(MainActivity.this,result,Toast.LENGTH_SHORT).show();
+                fetchAwardNo();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
     }

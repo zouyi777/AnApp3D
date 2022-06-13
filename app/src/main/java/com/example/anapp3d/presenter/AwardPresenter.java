@@ -12,6 +12,7 @@ import com.example.anapp3d.model.entity.QueryAwardParam;
 import com.example.anapp3d.utils.NumberUtil;
 import com.example.anapp3d.view.ViewCallBack;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -169,8 +170,8 @@ public class AwardPresenter implements Presenter{
         return result;
     }
 
-    public String importAwardNo(){
-        String result = awardNo3DModel.importAwardNo();
+    public String importAwardNo(InputStream in){
+        String result = awardNo3DModel.importAwardNo(in);
         if(!result.contains(AwardNo3DModel.IMPORT_AWARD_ERROR)){
             result = "数据导入成功";
         }

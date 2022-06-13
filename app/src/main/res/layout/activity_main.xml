@@ -74,6 +74,7 @@
             android:minHeight="0dp"
             app:layout_constraintEnd_toStartOf="@id/btnExport"
             app:layout_constraintTop_toTopOf="parent"
+            android:layout_marginEnd="@dimen/block_margin_xsmall"
             android:gravity="center"
             android:textSize="@dimen/font_size_xmiddle"
             android:textColor="@color/white"
