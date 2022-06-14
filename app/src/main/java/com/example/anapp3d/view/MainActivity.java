@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         awardPresenter = new AwardPresenter();
         fetchAwardNo();
+        switchBtnDirectGroupStyle();
     }
 
     @Override
@@ -132,10 +133,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnSwitchDirect:
                 queryAwardParam.setSelectDirectOrGroup(DirectOrGroup.DIRECT);
                 fetchAwardNo();
+                switchBtnDirectGroupStyle();
                 break;
             case R.id.btnSwitchGroup:
                 queryAwardParam.setSelectDirectOrGroup(DirectOrGroup.GROUP);
                 fetchAwardNo();
+                switchBtnDirectGroupStyle();
                 break;
             case R.id.btnImport:
                 dataOperType = DataOperType.IMPORT_AWARD;
@@ -168,6 +171,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             default:
                 break;
+        }
+    }
+
+    /**
+     * 切换直选组选按钮样式
+     */
+    private void switchBtnDirectGroupStyle(){
+        if(DirectOrGroup.DIRECT.equals(queryAwardParam.getSelectDirectOrGroup())){
+            btnSwitchDirect.setTextColor(getResources().getColor(R.color.colorTimes,null));
+            btnSwitchGroup.setTextColor(getResources().getColor(R.color.white,null));
+        }else if(DirectOrGroup.GROUP.equals(queryAwardParam.getSelectDirectOrGroup())){
+            btnSwitchDirect.setTextColor(getResources().getColor(R.color.white,null));
+            btnSwitchGroup.setTextColor(getResources().getColor(R.color.colorTimes,null));
         }
     }
 
