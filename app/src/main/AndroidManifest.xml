@@ -4,6 +4,8 @@
 
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <!--所有文件访问权限-->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
 
     <!--android:requestLegacyExternalStorage="true": 防止安卓10即使动态申请了权限，
         也报错open failed: EACCES (Permission denied)
@@ -15,7 +17,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.AnApp3D">
+        android:theme="@style/Theme.AnApp3D"
+        android:requestLegacyExternalStorage="true">
         <activity
             android:name=".view.MainActivity"
             android:exported="true">

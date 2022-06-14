@@ -170,6 +170,14 @@ public class AwardPresenter implements Presenter{
         return result;
     }
 
+    public String importAwardNo(){
+        String result = awardNo3DModel.importAwardNo();
+        if(!result.contains(AwardNo3DModel.IMPORT_AWARD_ERROR)){
+            result = "数据导入成功";
+        }
+        return result;
+    }
+
     public String importAwardNo(InputStream in){
         String result = awardNo3DModel.importAwardNo(in);
         if(!result.contains(AwardNo3DModel.IMPORT_AWARD_ERROR)){

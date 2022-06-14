@@ -1,6 +1,7 @@
 package com.example.anapp3d.view;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -10,9 +11,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -42,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static String TAG = MainActivity.class.getName();
 
     public static int REQUEST_CODE_EXPORT_AWARD_NO = 10000;
+    public static int REQUEST_CODE_MANAGE_ALL_FILES_PERMISSION = 1024;
 
     private Button btnAdd;
     private Button btnSwitchDirect;
@@ -133,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btnImport:
                 dataOperType = DataOperType.IMPORT_AWARD;
-                requestReadWritePermissions();
+                importAwardDialog();
                 break;
             case R.id.btnExport:
                 dataOperType = DataOperType.EXPORT_AWARD;
@@ -359,12 +365,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * 导出奖号
+     * 请求读写权限
      */
     private void requestReadWritePermissions(){
         //外部存储的读写权限
         String[] PM_MULTIPLE={ Manifest.permission.READ_EXTERNAL_STORAGE,
-                               Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                               Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                               Manifest.permission.MANAGE_EXTERNAL_STORAGE};
         try{
             //如果操作系统SDK级别在23之上（android6.0），就进行动态权限申请
             if(Build.VERSION.SDK_INT>=23){
@@ -373,10 +380,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 //获取当前未授权的权限列表
                 for(String permission:PM_MULTIPLE){
+
                     int nRet= ActivityCompat.checkSelfPermission(this,permission);
-                    Log.i(TAG,"checkSelfPermission nRet="+nRet);
+
                     if(nRet!= PackageManager.PERMISSION_GRANTED){
-                        pmList.add(permission);
+                        if(permission == Manifest.permission.MANAGE_EXTERNAL_STORAGE){
+                            if(!hasManageExternalStorage()){
+                                pmList.add(permission);
+                            }
+                        }else{
+                            pmList.add(permission);
+                        }
                     }
                 }
 
@@ -404,14 +418,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(MainActivity.this,result,Toast.LENGTH_SHORT).show();
 
         }else if(DataOperType.IMPORT_AWARD.equals(dataOperType)){
-
-            try {
-                String result = awardPresenter.importAwardNo(getResources().getAssets().open(AwardNo3DModel.EXPORT_FILE_NAME));
-                Toast.makeText(MainActivity.this,result,Toast.LENGTH_SHORT).show();
-                fetchAwardNo();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            //从Assets目录导入数据
+            //String result = awardPresenter.importAwardNo(getResources().getAssets().open(AwardNo3DModel.EXPORT_FILE_NAME));
+            String result = awardPresenter.importAwardNo();
+            Toast.makeText(MainActivity.this,result,Toast.LENGTH_SHORT).show();
+            fetchAwardNo();
         }
 
     }
@@ -434,11 +445,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 else{
                     //判断是否允许重新申请该权限
                     boolean nRet=ActivityCompat.shouldShowRequestPermissionRationale(this,permissions[i]);
-                    Log.i(TAG,"shouldShowRequestPermissionRationale nRet="+nRet);
+
                     if(nRet){//允许重新申请
                         requestAgainList.add(permissions[i]);
-                    }
-                    else{//禁止申请
+                    }else{//禁止申请
                         biddenList.add(permissions[i]);
                     }
                 }
@@ -459,6 +469,55 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_CODE_MANAGE_ALL_FILES_PERMISSION) {
+            // 检查是否有”所有文件访问权限“
+            if(hasManageExternalStorage()){
+                importOrExportAward();
+            }else{
+                Toast.makeText(MainActivity.this,"授权是被",Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    /**
+     * 判断当前应用是否有”所有文件访问权限“
+     * @return
+     */
+    public boolean hasManageExternalStorage(){
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            if(Environment.isExternalStorageManager()){
+                return true;
+            }else{
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 导入数据确认框
+     */
+    public void importAwardDialog(){
+        String title = "请在Documents目录下新建"+AwardNo3DModel.EXPORT_ROOT_DIRECT+"目录，并将名为"+AwardNo3DModel.EXPORT_FILE_NAME+"放入其中";
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("提示")
+                .setMessage(title)
+                .setPositiveButton("确定", (dialog1, which) -> {
+                    requestReadWritePermissions();
+                    dialog1.dismiss();
+                })
+                .setNegativeButton("取消",(dialog1, which) ->{
+                    dialog1.dismiss();
+                })
+                .create();
+        dialog.show();
+    }
+
     /**
      * 告知用户权限被禁止，需要手动开启
      */
@@ -467,7 +526,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setTitle("警告")
                 .setMessage("请前往设置中打开相关权限，否则功能无法正常运行！")
                 .setPositiveButton("确定", (dialog1, which) -> {
-                    // 一般情况下如果用户不授权的话，功能是无法运行的，做退出处理
+
+                    // 当targetSdkVersion = 30后，需要申请所有文件访问权限才能才能读写操作。
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION);
+                    intent.setData(Uri.parse("package:" + getPackageName()));
+                    MainActivity.this.startActivityForResult(intent, REQUEST_CODE_MANAGE_ALL_FILES_PERMISSION);
+
+                    dialog1.dismiss();
+                })
+                .setNegativeButton("取消",(dialog1, which) -> {
                     dialog1.dismiss();
                 })
                 .create();

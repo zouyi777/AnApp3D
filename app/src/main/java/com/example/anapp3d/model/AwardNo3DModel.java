@@ -20,12 +20,14 @@ import java.util.List;
 import java.util.UUID;
 
 import io.realm.Realm;
+import io.realm.RealmQuery;
 import io.realm.RealmResults;
 import io.realm.Sort;
 
 public class AwardNo3DModel {
 
     public static String TAG= AwardNo3DModel.class.getName();
+    public static String EXPORT_ROOT_DIRECT = "AnApp3d";
     public static String EXPORT_FILE_NAME = "AnApp3d_data.txt";
     public static String IMPORT_AWARD_ERROR = "import award error";
     public static String EXPORT_AWARD_ERROR = "export award error";
@@ -42,6 +44,10 @@ public class AwardNo3DModel {
      * @return
      */
     public boolean insertAwardNo3d(AwardNo3DPo awardNo3D,Long id){
+
+        if(hasAwardNoByIssueNo(awardNo3D)){
+            return false;
+        }
 
         realm.beginTransaction();
         AwardNo3DPo awardNo3DPo;
@@ -75,9 +81,30 @@ public class AwardNo3DModel {
         return true;
     }
 
+    /**
+     * 获取最新一条数据
+     * @return
+     */
     public AwardNo3DPo getLastAwardNo(){
         List<AwardNo3DPo> result = getAwardNoAll();
         return result.get(result.size()-1);
+    }
+
+    /**
+     * 根据期号判断是否存在
+     * @param awardNo3DPo
+     * @return
+     */
+    public boolean hasAwardNoByIssueNo(AwardNo3DPo awardNo3DPo){
+
+        AwardNo3DPo result = realm.where(AwardNo3DPo.class)
+                .equalTo("issueNo",awardNo3DPo.getIssueNo())
+                .findFirst();
+
+        if(null != result){
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -137,10 +164,20 @@ public class AwardNo3DModel {
     public String exportAwardNo(){
 
         List<AwardNo3DPo> listAwardNo = getAwardNoAll();
-//        File mPath = Environment.getExternalStorageDirectory();
-        // 小米手机不允许在外部存储的根目录下写文件，只能在Download, Documents目录下写
+        // 安卓11及以后不允许在外部存储的根目录下写文件，只能在Download, Documents等公共目录下写，而且也禁止在这些公共目录的根目录下直接写文件
         File mPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-        String fileName = mPath + File.separator+EXPORT_FILE_NAME;
+        //这里在Documents等公共目录下新建一个目录，因为安卓10及以后不允许在这些公共目录的根目录下直接写文件
+        String filePath = mPath.getAbsolutePath() + File.separator + EXPORT_ROOT_DIRECT;
+        File direct = new File(filePath);
+        if(!direct.exists()){
+            direct.mkdir();
+        }
+
+        String fileName = filePath + File.separator+EXPORT_FILE_NAME;
+        File oldFile = new File(fileName);
+        if(oldFile.exists()){
+            oldFile.delete();
+        }
         try {
             FileWriter fw = new FileWriter(fileName, false);
             BufferedWriter bw = new BufferedWriter(fw);
@@ -162,19 +199,18 @@ public class AwardNo3DModel {
      * 导入奖号数据
      * @return
      */
-    public String importAwardNo(InputStream in){
+    public String importAwardNo(){
 
-//        File mPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-//        String fileName = mPath + File.separator+EXPORT_FILE_NAME;
+        File mPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+//        File mPath = Environment.getExternalStorageDirectory();
+        String fileName = mPath.getAbsolutePath() + File.separator + EXPORT_ROOT_DIRECT + File.separator+EXPORT_FILE_NAME;
         try {
-//            FileReader fr = new FileReader(fileName);
-//            BufferedReader br = new BufferedReader(fr);
+            FileReader fr = new FileReader(fileName);
+            BufferedReader br = new BufferedReader(fr);
 
-            InputStreamReader inputReader = new InputStreamReader(in);
-            BufferedReader br = new BufferedReader(inputReader);
             String rawData;
             int i=0;
-            while ((rawData = br.readLine().trim()) != null && rawData.length() > 0){
+            while ((rawData = br.readLine()) != null && rawData.trim().length() > 0){
 
                 String[] rawDataArr = rawData.split(DIVIDER_OF_ISSUENO_AWARD);
                 Long issueNo = Long.valueOf(rawDataArr[0].trim());
@@ -194,9 +230,79 @@ public class AwardNo3DModel {
             }
 
             br.close();
-            inputReader.close();
+            fr.close();
         } catch (IOException e) {
             Log.e(TAG,"导入奖号数据出错",e);
+            return IMPORT_AWARD_ERROR+"="+e.getMessage();
+        }
+        return "success";
+    }
+
+    /**
+     * 导入奖号数据
+     * 从Assets目录导入数据
+     * @return
+     */
+    public String importAwardNo(InputStream in){
+
+        try {
+            InputStreamReader fr = new InputStreamReader(in);
+            BufferedReader br = new BufferedReader(fr);
+
+            String rawData;
+            int i=0;
+            while ((rawData = br.readLine()) != null && rawData.trim().length() > 0){
+
+                String[] rawDataArr = rawData.split(DIVIDER_OF_ISSUENO_AWARD);
+                Long issueNo = Long.valueOf(rawDataArr[0].trim());
+                char[] awardNo = rawDataArr[1].trim().toCharArray();
+
+                int hundredth = awardNo[0]-'0';
+                int ten = awardNo[1]-'0';
+                int theUnit = awardNo[2]-'0';
+                AwardNo3DPo awardNo3D = new AwardNo3DPo();
+                awardNo3D.setIssueNo(issueNo);
+                awardNo3D.setHundredth(hundredth);
+                awardNo3D.setTen(ten);
+                awardNo3D.setTheUnit(theUnit);
+
+                insertAwardNo3d(awardNo3D,System.currentTimeMillis()+i);
+                i++;
+            }
+
+            br.close();
+            fr.close();
+        } catch (IOException e) {
+            Log.e(TAG,"导入奖号数据出错",e);
+            return IMPORT_AWARD_ERROR+"="+e.getMessage();
+        }
+        return "success";
+    }
+
+    /**
+     * 读取其他应用公共目录文件
+     * @return
+     */
+    public String importOtherAppPublicFile(){
+
+        File mPath = Environment.getExternalStorageDirectory();
+        String fileName = mPath.getAbsolutePath() + File.separator + "dianjulog" + File.separator+"dianjulog.txt";
+        try {
+            FileReader fr = new FileReader(fileName);
+            BufferedReader br = new BufferedReader(fr);
+
+            String rawData;
+            int i=0;
+            while ((rawData = br.readLine()) != null && rawData.trim().length() > 0){
+
+                String rawDataArr = rawData;
+                Log.i(TAG,rawDataArr);
+            }
+
+            br.close();
+            fr.close();
+        } catch (IOException e) {
+            Log.e(TAG,"读取其他应用公共目录文件出错",e);
             return IMPORT_AWARD_ERROR+"="+e.getMessage();
         }
         return "success";
